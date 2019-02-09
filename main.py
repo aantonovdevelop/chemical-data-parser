@@ -6,6 +6,10 @@ import chemical
 
 from PyQt5 import QtWidgets
 
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
+
 
 class Application(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
     def __init__(self):
@@ -14,6 +18,13 @@ class Application(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
         self.directory = None
         self.parse_objects = {}
+
+        self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        self.mainLayout.addWidget(self.canvas)
+        self.mainLayout.addWidget(self.toolbar)
 
         self.btnOpenDirectory.clicked.connect(self.browse_folder)
         self.btnExport.clicked.connect(self.export)
@@ -47,12 +58,30 @@ class Application(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
     def preview(self, file_name_item):
         parser = self.parse_objects[file_name_item.text()]
-        preview_string = "Difference: " + str(parser.difference) + "\n"
+        preview_string = "Difference: " + str(parser.difference) + "\n\n"
 
         for point in parser.normalized_data:
             preview_string += str(point[0]) + "\t" + str(point[1]) + "\n"
 
         self.txtResult.setText(preview_string)
+
+        self.figure.clear()
+
+        data_graph = self.figure.add_subplot(111)
+        data_graph.plot(list(map(lambda v: v[0], parser.data)), list(map(lambda v: v[1], parser.data)), alpha=0.3)
+
+        normalized_graph = self.figure.add_subplot(111)
+        normalized_graph.plot(list(map(lambda v: v[0], parser.normalized_data)), list(map(lambda v: v[1], parser.normalized_data)))
+
+        closest_to_median_graph = self.figure.add_subplot(111)
+
+        for point in parser.closest_to_median:
+            closest_to_median_graph.scatter(point[0], point[1])
+
+        normalized_median_graph = self.figure.add_subplot(111)
+        normalized_median_graph.plot(list(map(lambda v: v[0], parser.normalized_data)), [parser.median_normalized] * len(parser.normalized_data))
+
+        self.canvas.draw()
 
     def export(self):
         # noinspection PyCallByClass

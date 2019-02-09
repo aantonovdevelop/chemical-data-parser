@@ -9,6 +9,8 @@ class ChemicalDataParser:
         return (2 * (y - min_y) / (max_y - min_y)) - 1
 
     def __init__(self, data: list):
+        self.data = data
+
         data_x = list(map(lambda v: v[0], data))
         data_y = list(map(lambda v: v[1], data))
 
@@ -18,7 +20,7 @@ class ChemicalDataParser:
         normalized_y = [ChemicalDataParser.__normalize(y, min_point[1], max_point[1]) for y in data_y]
 
         median = statistics.median(data_y)
-        median_normalized = statistics.median(normalized_y)
+        self.median_normalized = statistics.median(normalized_y)
 
         data_normalized = [[data_x[i], normalized_y[i]] for i in range(len(normalized_y))]
 
@@ -34,16 +36,16 @@ class ChemicalDataParser:
         interpolated_x = list(map(lambda v: v[0], interpolated_data))
         interpolated_y = list(map(lambda v: v[1], interpolated_data))
 
-        closest_to_median = []
+        self.closest_to_median = []
         for i in range(0, len(median_crosses), 2):
             points = []
             for x in np.arange(median_crosses[i][0], median_crosses[i + 1][0], 0.001):
                 points.append([x, abs(f(x).tolist())])
-            closest_to_median.append(min(points, key=lambda v: v[1]))
+            self.closest_to_median.append(min(points, key=lambda v: v[1]))
 
         x_difference = 0
-        if len(closest_to_median) > 1:
-            x_difference = closest_to_median[1][0] - closest_to_median[0][0]
+        if len(self.closest_to_median) > 1:
+            x_difference = self.closest_to_median[1][0] - self.closest_to_median[0][0]
 
         self.difference = x_difference
         self.normalized_data = data_normalized
