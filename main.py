@@ -47,6 +47,10 @@ class Application(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
         for file in files:
             data = []
             with open(self.directory + "/" + file, "r") as data_file:
+                # skip first two lines
+                next(data_file)
+                next(data_file)
+
                 for line in data_file:
                     data.append(list(map(float, re.sub(" +", " ", line).split(" ")[2:])))
             self.parse_objects[file] = chemical.ChemicalDataParser(data)
