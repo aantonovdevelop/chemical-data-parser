@@ -3,12 +3,15 @@ import os
 import sys
 import mainwindow
 import chemical
+import matplotlib
 
 from PyQt5 import QtWidgets
 
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-import matplotlib.pyplot as plt
 
 
 class Application(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
