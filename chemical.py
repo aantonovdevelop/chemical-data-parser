@@ -8,7 +8,7 @@ class ChemicalDataParser:
     def __normalize(y, min_y, max_y):
         return (2 * (y - min_y) / (max_y - min_y)) - 1
 
-    def __init__(self, data: list):
+    def __init__(self, data: list, period: float = 0.005):
         self.data = data
 
         data_x = list(map(lambda v: v[0], data))
@@ -26,7 +26,7 @@ class ChemicalDataParser:
 
         median_crosses = []
         for i in range(len(data_normalized) - 1):
-            if data_normalized[i][1] > 0.01 and -0.01 > data_normalized[i + 1][1]:
+            if data_normalized[i][1] > period and -period > data_normalized[i + 1][1]:
                 median_crosses.append(data_normalized[i])
                 median_crosses.append(data_normalized[i + 1])
 

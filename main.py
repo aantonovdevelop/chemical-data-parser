@@ -1,6 +1,7 @@
 import re
 import os
 import sys
+
 import mainwindow
 import chemical
 import matplotlib
@@ -35,6 +36,7 @@ class Application(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
     def browse_folder(self):
         self.lstFiles.clear()
+        self.parse_objects.clear()
 
         # noinspection PyCallByClass
         self.directory = QtWidgets.QFileDialog.getExistingDirectory(self, "Chose directory")
@@ -53,7 +55,8 @@ class Application(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
                 for line in data_file:
                     data.append(list(map(float, re.sub(" +", " ", line).split(" ")[2:])))
-            self.parse_objects[file] = chemical.ChemicalDataParser(data)
+
+            self.parse_objects[file] = chemical.ChemicalDataParser(data, 0.005)
 
             self.lstFiles.addItem(file)
 
@@ -102,7 +105,7 @@ class Application(QtWidgets.QMainWindow, mainwindow.Ui_MainWindow):
 
             with open(export_directory + "/" + file_name + ".dat", "w") as file:
                 for point in parser.normalized_data:
-                    file.write(str(point[0]) + " " + str(point[1]) + "\n")
+                    file.write(str(point[0]) + "\t" + str(point[1]) + "\n")
 
         QtWidgets.QMessageBox.information(self, "Export", "Data exported")
 
