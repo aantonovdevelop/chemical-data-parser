@@ -33,8 +33,8 @@ class ChemicalDataParser:
         f = interpolate.interp1d(data_x, normalized_y)
 
         interpolated_data = [[x, f(x).tolist()] for x in data_x]
-        interpolated_x = list(map(lambda v: v[0], interpolated_data))
-        interpolated_y = list(map(lambda v: v[1], interpolated_data))
+        self.interpolated_x = list(map(lambda v: v[0], interpolated_data))
+        self.interpolated_y = list(map(lambda v: v[1], interpolated_data))
 
         self.closest_to_median = []
         for i in range(0, len(median_crosses), 2):

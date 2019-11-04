@@ -5,6 +5,7 @@ import sys
 import mainwindow
 import chemical
 import matplotlib
+import raw_output
 
 from PyQt5 import QtWidgets
 
